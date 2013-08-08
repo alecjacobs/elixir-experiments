@@ -49,11 +49,20 @@ defmodule Primes do
 		end
 	end
  
-	def find_primes_until(limit) do
+	def parallel_find_primes_until(limit) do
+		primes = C.pmap int_to_list(limit, []), fn x -> is_prime(x) end
+		scrub_list(primes, false)
+	end
+
+	def sequential_find_primes_until(limit) do
 		primes = C.map int_to_list(limit, []), fn x -> is_prime(x) end
 		scrub_list(primes, false)
 	end
  
 end
 
-IO.inspect Primes.find_primes_until(20000)
+IO.inspect "finding primes sequentially"
+IO.inspect Primes.sequential_find_primes_until(20000)
+
+IO.inspect "finding primes in parallel"
+IO.inspect Primes.parallel_find_primes_until(20000)
